@@ -14,7 +14,9 @@ import com.seb.model.MapObject;
 public class MapPanel extends JPanel {
     private final ImageIcon mapImage;
     private final Map<Long, Dot> dots = new HashMap<>();
-    private static final int DOT_SIZE = 12;
+    private static final int DOT_SIZE = 5;
+
+    private Integer selectedType;
 
     public MapPanel(ImageIcon mapImage) {
         this.mapImage = mapImage;
@@ -56,6 +58,11 @@ public class MapPanel extends JPanel {
         g.drawImage(mapImage.getImage(), 0, 0, this);
 
         for (Dot dot : dots.values()) {
+            if (selectedType != null
+                    && dot.getType() != selectedType) {
+                continue;
+            }
+
             g.setColor(dot.getColor());
             g.fillOval(
                     dot.getX() - DOT_SIZE / 2,
@@ -63,5 +70,10 @@ public class MapPanel extends JPanel {
                     DOT_SIZE,
                     DOT_SIZE);
         }
+    }
+
+    public void setVisibleType(Integer type) {
+        selectedType = type;
+        repaint();
     }
 }

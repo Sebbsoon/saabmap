@@ -9,9 +9,7 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             MapFrame mapFrame = new MapFrame();
-
             ObjectStreamClient client = new ObjectStreamClient(mapObject -> {
-                System.out.println("Received object: " + mapObject);
                 mapFrame.updateObject(mapObject);
             });
 
