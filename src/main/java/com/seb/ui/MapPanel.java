@@ -16,7 +16,7 @@ public class MapPanel extends JPanel {
     private final Map<Long, Dot> dots = new HashMap<>();
     private static final int DOT_SIZE = 5;
 
-    private Integer selectedType;
+    private Integer selectedCategory;
 
     public MapPanel(ImageIcon mapImage) {
         this.mapImage = mapImage;
@@ -58,8 +58,7 @@ public class MapPanel extends JPanel {
         g.drawImage(mapImage.getImage(), 0, 0, this);
 
         for (Dot dot : dots.values()) {
-            if (selectedType != null
-                    && dot.getType() != selectedType) {
+            if (!isVisibleForCategory(dot)) {
                 continue;
             }
 
@@ -72,8 +71,20 @@ public class MapPanel extends JPanel {
         }
     }
 
-    public void setVisibleType(Integer type) {
-        selectedType = type;
+    private boolean isVisibleForCategory(Dot dot) {
+        if (selectedCategory == null) {
+            return true;
+        }
+
+        return switch (selectedCategory) {
+            case 1 -> dot.getType() == 1 || dot.getType() == 2;
+            case 2 -> dot.getType() == 3;
+            default -> false;
+        };
+    }
+
+    public void setVisibleCategory(Integer category) {
+        selectedCategory = category;
         repaint();
     }
 }

@@ -31,9 +31,10 @@ public class MapFrame {
         JButton category2 = new JButton("Category 2");
         JButton all = new JButton("All");
 
-        category1.addActionListener(event -> mapPanel.setVisibleType(1));
-        category2.addActionListener(event -> mapPanel.setVisibleType(2));
-        all.addActionListener(event -> mapPanel.setVisibleType(null));
+
+        category1.addActionListener(event -> mapPanel.setVisibleCategory(1));
+        category2.addActionListener(event -> mapPanel.setVisibleCategory(2));
+        all.addActionListener(event -> mapPanel.setVisibleCategory(null));
 
         controls.add(category1);
         controls.add(category2);
