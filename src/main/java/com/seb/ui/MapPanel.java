@@ -71,7 +71,7 @@ public class MapPanel extends JPanel {
         }
     }
 
-    private boolean isVisibleForCategory(Dot dot) {
+    public boolean isVisibleForCategory(Dot dot) {
         if (selectedCategory == null) {
             return true;
         }
@@ -86,5 +86,9 @@ public class MapPanel extends JPanel {
     public void setVisibleCategory(Integer category) {
         selectedCategory = category;
         repaint();
+    }
+
+    Dot getDot(long id) {
+        return dots.get(id);
     }
 }

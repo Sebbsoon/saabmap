@@ -6,7 +6,7 @@ public class MapObject {
     private int x;
     private int y;
 
-    public MapObject(long id, int type, int x, int y) {
+    public MapObject(long id, int x, int y, int type) {
         this.id = id;
         this.type = type;
         this.x = x;

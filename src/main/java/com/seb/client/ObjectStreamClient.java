@@ -100,7 +100,7 @@ public class ObjectStreamClient implements Runnable {
         int y = Integer.parseInt(fields.get("Y"));
         int type = Integer.parseInt(fields.get("TYPE"));
 
-        return new MapObject(id, type, x, y);
+        return new MapObject(id, x, y,type);
     }
 
 }
