@@ -2,12 +2,14 @@ package com.seb.ui;
 
 import java.awt.BorderLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
 import com.seb.model.MapObject;
@@ -21,19 +23,30 @@ public class MapFrame {
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mapPanel = new MapPanel(imageIcon);
-
+        
         JPanel content = new JPanel(new BorderLayout());
+        content.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         content.add(mapPanel, BorderLayout.CENTER);
 
         JPanel controls = new JPanel();
 
-        JButton category1 = new JButton("Category 1");
-        JButton category2 = new JButton("Category 2");
-        JButton all = new JButton("All");
+        JToggleButton category1 = new JToggleButton("Show Category 1");
+        JToggleButton category2 = new JToggleButton("Show Category 2");
+        JToggleButton all = new JToggleButton("Show All", true);
 
+        ButtonGroup categoryButtons = new ButtonGroup();
+        categoryButtons.add(category1);
+        categoryButtons.add(category2);
+        categoryButtons.add(all);
 
-        category1.addActionListener(event -> mapPanel.setVisibleCategory(1));
-        category2.addActionListener(event -> mapPanel.setVisibleCategory(2));
+        category1.addActionListener(event -> {
+            mapPanel.setVisibleCategory(1);
+            all.setSelected(false);
+        });
+        category2.addActionListener(event -> {
+            mapPanel.setVisibleCategory(2);
+            all.setSelected(false);
+        });
         all.addActionListener(event -> mapPanel.setVisibleCategory(null));
 
         controls.add(category1);
