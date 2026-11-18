@@ -94,13 +94,19 @@ public class ObjectStreamClient implements Runnable {
                 return null;
             }
         }
+        try {
+            long id = Long.parseLong(fields.get("ID"));
+            int x = Integer.parseInt(fields.get("X"));
+            int y = Integer.parseInt(fields.get("Y"));
+            int type = Integer.parseInt(fields.get("TYPE"));
 
-        long id = Long.parseLong(fields.get("ID"));
-        int x = Integer.parseInt(fields.get("X"));
-        int y = Integer.parseInt(fields.get("Y"));
-        int type = Integer.parseInt(fields.get("TYPE"));
+            return new MapObject(id, x, y, type);
+        } catch (Exception e) {
+            System.out.println("Error parsing object: " + e.getMessage());
+            e.printStackTrace(System.out);
+        }
 
-        return new MapObject(id, x, y,type);
+        return null;
     }
 
 }
