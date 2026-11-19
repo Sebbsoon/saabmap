@@ -2,49 +2,59 @@ package com.seb.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.junit.jupiter.api.Test;
 
-import com.seb.model.MapObject;
+import com.seb.model.MapObjectUpdate;
 
 public class ObjectStreamClientTest {
-    ObjectStreamClient client = new ObjectStreamClient(mapObject -> {
-    });
+    ObjectStreamClient client = new ObjectStreamClient(mapObjectU -> {
+    }, "localhost", 5463);
+    MapObjectUpdateParser parser = new MapObjectUpdateParser();
 
     @Test
-    public void testParseValidObject() {
-        String line = "ID=1;X=100;Y=200;TYPE=2";
-        MapObject object = client.parseObject(line);
-        assertEquals(1, object.getId());
-        assertEquals(2, object.getType());
-        assertEquals(100, object.getX());
-        assertEquals(200, object.getY());
-    }
+    public void testReceivesObjectFromSocket() throws Exception {
+        AtomicReference<MapObjectUpdate> received = new AtomicReference<>();
+        CountDownLatch receivedLatch = new CountDownLatch(1);
 
-    @Test
-    public void testParseInvalidObject() {
-        String line = "ID=1;X=100;Y=200;Z=300;TYPE=2";
-        MapObject object = client.parseObject(line);
-        assertEquals(null, object);
-    }
+        try (ServerSocket server = new ServerSocket(0)) {
+            Thread serverThread = new Thread(() -> {
+                try (Socket socket = server.accept();
+                        PrintWriter out = new PrintWriter(
+                                socket.getOutputStream(), true)) {
+                    out.println("ID=1;X=100;Y=200;TYPE=2");
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            });
 
-    @Test
-    public void testParseEmptyObject() {
-        String line = "";
-        MapObject object = client.parseObject(line);
-        assertEquals(null, object);
-    }
+            serverThread.start();
 
-    @Test
-    public void testParseNullObject() {
-        MapObject object = client.parseObject(null);
-        assertEquals(null, object);
-    }
+            ObjectStreamClient socketClient = new ObjectStreamClient(mapObject -> {
+                received.set(mapObject);
+                receivedLatch.countDown();
+            }, "localhost", server.getLocalPort());
 
-    @Test
-    public void testParsePartialObject() {
-        String line = "ID=1;X=100;TYPE=2;";
-        MapObject object = client.parseObject(line);
-        assertEquals(null, object);
-    }
+            Thread clientThread = new Thread(socketClient);
+            clientThread.start();
 
+            assertEquals(true, receivedLatch.await(2, TimeUnit.SECONDS));
+
+            clientThread.interrupt();
+            clientThread.join(2000);
+
+            serverThread.join(2000);
+
+            assertEquals(1, received.get().id());
+            assertEquals(100, received.get().x());
+            assertEquals(200, received.get().y());
+            assertEquals(2, received.get().type());
+        }
+    }
 }
