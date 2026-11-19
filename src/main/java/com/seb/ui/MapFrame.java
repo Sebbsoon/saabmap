@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
-import com.seb.model.MapObject;
+import com.seb.model.MapObjectUpdate;
 
 public class MapFrame {
     private final JFrame frame;
@@ -70,7 +70,7 @@ public class MapFrame {
         frame.setLocationRelativeTo(null);
     }
 
-    public void updateObject(MapObject object) {
+    public void updateObject(MapObjectUpdate object) {
         if (object == null) {
             System.out.println("Received null object, ignoring update");
             return;

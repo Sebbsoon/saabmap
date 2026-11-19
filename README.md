@@ -31,3 +31,30 @@ Example `server.properties`:
 ```properties
 SERVERPORT=5463
 MAP=map.gif
+```
+
+## Build, test, and run with Maven
+
+From the project root:
+
+### Build
+
+```powershell
+mvn clean package
+```
+
+This compiles the application and runs the tests.
+
+### Test
+
+```powershell
+mvn test
+```
+
+### Run
+
+Start the SAAB server first, then run:
+
+```powershell
+mvn exec:java
+```
