@@ -14,9 +14,6 @@ import org.junit.jupiter.api.Test;
 import com.seb.model.MapObjectUpdate;
 
 public class ObjectStreamClientTest {
-    ObjectStreamClient client = new ObjectStreamClient(mapObjectU -> {
-    }, "localhost", 5463);
-    MapObjectUpdateParser parser = new MapObjectUpdateParser();
 
     @Test
     public void testReceivesObjectFromSocket() throws Exception {
