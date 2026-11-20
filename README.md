@@ -83,10 +83,3 @@ mvn exec:java
 - Missing or invalid client configuration falls back to `localhost:5463`.
 - Malformed TCP updates are ignored rather than terminating the application.
 
-## Starting the SAAB server
-
-From the server application directory:
-
-```powershell
-java -classpath SAAB.jar com.saabtech.server.SAABServer
-```
