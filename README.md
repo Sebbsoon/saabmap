@@ -68,6 +68,7 @@ mvn exec:java
 - Coordinates outside the image remain stored and may not be visibly drawn.
 - Object IDs are expected to be non-negative.
 - Object types are limited to `1`, `2`, and `3`.
+- Old object remains when a reconnect occurs.
 
 ## Implementation decisions
 
