@@ -58,3 +58,34 @@ Start the SAAB server first, then run:
 ```powershell
 mvn exec:java
 ```
+
+## Assumptions
+
+- The SAAB server is available locally and listens on `localhost:5463`.
+- The server sends one object update per line using semicolon-separated fields.
+- Object IDs remain stable while an object's position changes.
+- X and Y coordinates are interpreted as pixel coordinates relative to `map.gif`.
+- Coordinates outside the image remain stored and may not be visibly drawn.
+- Object IDs are expected to be non-negative.
+- Object types are limited to `1`, `2`, and `3`.
+
+## Implementation decisions
+
+- Maven is used for compilation, testing, execution, and packaging.
+- The map is packaged in `src/main/resources/map.gif` and loaded through the classpath.
+- TCP input is parsed and converted into immutable `MapObjectUpdate` records.
+- Objects are stored in a map keyed by their object ID.
+- The TCP client reconnects automatically after connection loss.
+- Reconnection uses exponential backoff from one second up to thirty seconds.
+- The backoff resets after a successful connection.
+- Host and port settings are read from `client.properties`.
+- Missing or invalid client configuration falls back to `localhost:5463`.
+- Malformed TCP updates are ignored rather than terminating the application.
+
+## Starting the SAAB server
+
+From the server application directory:
+
+```powershell
+java -classpath SAAB.jar com.saabtech.server.SAABServer
+```

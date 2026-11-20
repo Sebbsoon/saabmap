@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import com.seb.model.MapMarker;
 import com.seb.model.MapObjectUpdate;
 
-
 public class MapPanel extends JPanel {
     private final ImageIcon mapImage;
     private final Map<Long, MapMarker> dots = new HashMap<>();
@@ -35,10 +34,14 @@ public class MapPanel extends JPanel {
             repaintDot(object.x(), object.y());
             return;
         }
-
+        int oldX = dot.getX();
+        int oldY = dot.getY();
         dot.setX(object.x());
         dot.setY(object.y());
         dot.setType(object.type());
+        repaintDot(oldX, oldY);
+        repaintDot(object.x(), object.y());
+
     }
 
     private void repaintDot(int x, int y) {

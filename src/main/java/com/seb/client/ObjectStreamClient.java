@@ -45,14 +45,16 @@ public class ObjectStreamClient implements Runnable {
                         if (newObject != null) {
                             onUpdate.accept(newObject);
                         }
-                    } catch (RuntimeException e) {
-                        System.out.println("Could not parse server data: " + line);
-                        e.printStackTrace(System.out);
+                    } catch (RuntimeException exception) {
+                        System.out.println(
+                                "Could not process server data: " + line
+                                        + " (" + exception.getMessage() + ")");
                     }
                 }
                 System.out.println("Server connection closed");
-            } catch (Exception e) {
-                System.out.println("Server connection failed: " + e.getMessage());
+            } catch (Exception exception) {
+                System.out.println(
+                        "Server connection failed: " + exception.getMessage());
             }
             if (Thread.currentThread().isInterrupted()) {
                 break;

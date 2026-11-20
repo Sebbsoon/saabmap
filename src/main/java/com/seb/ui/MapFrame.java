@@ -1,6 +1,7 @@
 package com.seb.ui;
 
 import java.awt.BorderLayout;
+import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -17,13 +18,21 @@ import com.seb.model.MapObjectUpdate;
 public class MapFrame {
     private final JFrame frame;
     private final MapPanel mapPanel;
+    private final URL mapUrl;
 
     public MapFrame() {
-        ImageIcon imageIcon = new ImageIcon(MapFrame.class.getResource("/map.gif"));
+        mapUrl = MapFrame.class.getResource("/map.gif");
+
+        if (mapUrl == null) {
+            System.out.println("Map resource not found: /map.gif");
+            throw new IllegalStateException("Missing map resource: /map.gif");
+        }
+
+        ImageIcon imageIcon = new ImageIcon(mapUrl);
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mapPanel = new MapPanel(imageIcon);
-        
+
         JPanel content = new JPanel(new BorderLayout());
         content.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         content.add(mapPanel, BorderLayout.CENTER);
@@ -72,7 +81,6 @@ public class MapFrame {
 
     public void updateObject(MapObjectUpdate object) {
         if (object == null) {
-            System.out.println("Received null object, ignoring update");
             return;
         }
         Runnable updateTask = () -> mapPanel.updateObject(object);

@@ -8,7 +8,7 @@ import com.seb.model.MapObjectUpdate;
 public class MapObjectUpdateParser {
     public MapObjectUpdate parse(String line) {
         if (line == null || line.isBlank()) {
-            return null;
+            return invalid(line, "empty line");
         }
 
         Map<String, String> fields = new HashMap<>();
@@ -19,7 +19,7 @@ public class MapObjectUpdateParser {
             if (pair.length != 2
                     || pair[0].isBlank()
                     || pair[1].isBlank()) {
-                return null;
+                return invalid(line, "invalid field format");
             }
 
             String name = pair[0].trim().toUpperCase();
@@ -29,23 +29,43 @@ public class MapObjectUpdateParser {
                     && !name.equals("X")
                     && !name.equals("Y")
                     && !name.equals("TYPE")) {
-                return null;
+                return invalid(line, "invalid field name");
             }
 
             if (fields.put(name, value) != null) {
-                return null;
+                return invalid(line, "duplicate field");
             }
         }
 
         try {
-            long id = Long.parseLong(fields.get("ID"));
-            int x = Integer.parseInt(fields.get("X"));
-            int y = Integer.parseInt(fields.get("Y"));
-            int type = Integer.parseInt(fields.get("TYPE"));
+            String idValue = fields.get("ID");
+            String xValue = fields.get("X");
+            String yValue = fields.get("Y");
+            String typeValue = fields.get("TYPE");
+
+            if (idValue == null || xValue == null
+                    || yValue == null || typeValue == null) {
+                return invalid(line, "missing required field");
+            }
+
+            long id = Long.parseLong(idValue);
+            int x = Integer.parseInt(xValue);
+            int y = Integer.parseInt(yValue);
+            int type = Integer.parseInt(typeValue);
+
+            if (id < 0 || type < 1 || type > 3) {
+                return invalid(line, "invalid ID or type");
+            }
 
             return new MapObjectUpdate(id, x, y, type);
         } catch (RuntimeException exception) {
-            return null;
+            return invalid(line, "parsing error");
         }
+    }
+
+    private MapObjectUpdate invalid(String line, String reason) {
+        System.out.println("Invalid server data: " + line
+                + " (" + reason + ")");
+        return null;
     }
 }
