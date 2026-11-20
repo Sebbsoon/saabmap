@@ -19,6 +19,11 @@ public class Main {
         int serverPort = Integer.parseInt(
                 config.getProperty("server.port", "5463"));
 
+        if (serverPort < 1 || serverPort > 65535) {
+            throw new IllegalStateException(
+                    "Invalid server port: " + serverPort);
+        }
+
         SwingUtilities.invokeLater(() -> {
             MapFrame mapFrame = new MapFrame();
             ObjectStreamClient client = new ObjectStreamClient(
@@ -35,16 +40,21 @@ public class Main {
     private static Properties loadConfig() {
         Properties config = new Properties();
 
-        try (InputStream input = Main.class.getResourceAsStream(CONFIG_RESOURCE)) {
-            if (input == null) {
-                throw new IllegalStateException(
-                        "Missing configuration resource: " + CONFIG_RESOURCE);
+        try (InputStream input =
+                Main.class.getResourceAsStream(CONFIG_RESOURCE)) {
+            if (input != null) {
+                config.load(input);
+            } else {
+                System.out.println(
+                        "Configuration not found: " + CONFIG_RESOURCE
+                        + "; using defaults");
             }
-
-            config.load(input);
-            return config;
-        } catch (IOException e) {
-            throw new IllegalStateException("Could not load client configuration", e);
+        } catch (IOException exception) {
+            System.out.println(
+                    "Could not load configuration " + CONFIG_RESOURCE
+                    + ": " + exception.getMessage());
         }
+
+        return config;
     }
 }
